@@ -45,7 +45,7 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                     </p>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" name="createprojectform" id="createprojectform" >
                     {/* Project Name */}
                     <div>
                         <label className="block text-sm mb-1">Project Name</label>

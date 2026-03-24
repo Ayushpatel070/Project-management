@@ -25,11 +25,11 @@ const Layout = () => {
         if(isLoaded && user && workspaces.length === 0) {
             dispatch(fetchWorkspaces({getToken}))
         }
-    }, [user, isLoaded])
+    },[user, isLoaded])
 
-    if(!user){
+    if(!user) {
         return (
-            <div className='flex items-center justify-center h-screen bg-white dark:bg-zinc-950'>
+            <div className='flex justify-center items-center h-screen bg-white dark:bg-zinc-950'>
                 <SignIn />
             </div>
         )
@@ -41,13 +41,13 @@ const Layout = () => {
         </div>
     )
 
-    if(user && workspaces.length === 0) {
-        return (
-            <div className='flex items-center justify-center min-h-screen bg-white dark:bg-zinc-950'>
-                <CreateOrganization />
-            </div>
-        )
-    }
+    // if(user && workspaces.length === 0) {
+    //     return (
+    //         <div className='flex items-center justify-center min-h-screen'>
+    //             <CreateOrganization />
+    //         </div>
+    //     )
+    // }
 
     return (
         <div className="flex bg-white dark:bg-zinc-950 text-gray-900 dark:text-slate-100">

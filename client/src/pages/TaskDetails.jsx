@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CalendarIcon, MessageCircle, PenIcon } from "lucide-react";
 import { assets } from "../assets/assets";
+import { selectCurrentWorkspace } from "../features/workspaceSlice";
 
 const TaskDetails = () => {
 
@@ -19,7 +20,7 @@ const TaskDetails = () => {
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
 
-    const { currentWorkspace } = useSelector((state) => state.workspace);
+    const currentWorkspace = useSelector(selectCurrentWorkspace);
 
     const fetchComments = async () => {
 
@@ -27,13 +28,24 @@ const TaskDetails = () => {
 
     const fetchTaskDetails = async () => {
         setLoading(true);
-        if (!projectId || !taskId) return;
+        if (!projectId || !taskId || !currentWorkspace) {
+            setLoading(false);
+            return;
+        }
 
-        const proj = currentWorkspace.projects.find((p) => p.id === projectId);
-        if (!proj) return;
+        const projects = currentWorkspace.projects ?? [];
+        const proj = projects.find((p) => p.id === projectId);
+        if (!proj) {
+            setLoading(false);
+            return;
+        }
 
-        const tsk = proj.tasks.find((t) => t.id === taskId);
-        if (!tsk) return;
+        const tasks = proj.tasks ?? [];
+        const tsk = tasks.find((t) => t.id === taskId);
+        if (!tsk) {
+            setLoading(false);
+            return;
+        }
 
         setTask(tsk);
         setProject(proj);
@@ -91,7 +103,15 @@ const TaskDetails = () => {
                                 {comments.map((comment) => (
                                     <div key={comment.id} className={`sm:max-w-4/5 dark:bg-gradient-to-br dark:from-zinc-800 dark:to-zinc-900 border border-gray-300 dark:border-zinc-700 p-3 rounded-md ${comment.user.id === user?.id ? "ml-auto" : "mr-auto"}`} >
                                         <div className="flex items-center gap-2 mb-1 text-sm text-gray-500 dark:text-zinc-400">
-                                            <img src={comment.user.image} alt="avatar" className="size-5 rounded-full" />
+                                            {comment.user.image && comment.user.image.trim() ? (
+                                                <img src={comment.user.image} alt="avatar" className="size-5 rounded-full" />
+                                            ) : (
+                                                <div className="size-5 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center">
+                                                    <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                                        {comment.user.name?.charAt(0)?.toUpperCase() || "U"}
+                                                    </span>
+                                                </div>
+                                            )}
                                             <span className="font-medium text-gray-900 dark:text-white">{comment.user.name}</span>
                                             <span className="text-xs text-gray-400 dark:text-zinc-600">
                                                 • {format(new Date(comment.createdAt), "dd MMM yyyy, HH:mm")}
@@ -149,7 +169,15 @@ const TaskDetails = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700 dark:text-zinc-300">
                         <div className="flex items-center gap-2">
-                            <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
+                            {task.assignee?.image && task.assignee.image.trim() ? (
+                                <img src={task.assignee.image} className="size-5 rounded-full" alt="avatar" />
+                            ) : (
+                                <div className="size-5 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center">
+                                    <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                        {task.assignee?.name?.charAt(0)?.toUpperCase() || "U"}
+                                    </span>
+                                </div>
+                            )}
                             {task.assignee?.name || "Unassigned"}
                         </div>
                         <div className="flex items-center gap-2">

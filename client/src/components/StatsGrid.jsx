@@ -51,30 +51,32 @@ export default function StatsGrid() {
     ];
 
     useEffect(() => {
-        if (currentWorkspace) {
-            setStats({
-                totalProjects: currentWorkspace.projects.length,
-                activeProjects: currentWorkspace.projects.filter(
-                    (p) => p.status !== "CANCELLED" && p.status !== "COMPLETED"
-                ).length,
-                completedProjects: currentWorkspace.projects
-                    .filter((p) => p.status === "COMPLETED")
-                    .reduce((acc, project) => acc + project.tasks.length, 0),
-                myTasks: currentWorkspace.projects.reduce(
-                    (acc, project) =>
-                        acc +
-                        project.tasks.filter(
-                            (t) => t.assignee?.email === currentWorkspace.owner.email
-                        ).length,
-                    0
-                ),
-                overdueIssues: currentWorkspace.projects.reduce(
-                    (acc, project) =>
-                        acc + project.tasks.filter((t) => t.due_date < new Date()).length,
-                    0
-                ),
-            });
-        }
+        if (!currentWorkspace) return;
+
+        const projects = currentWorkspace.projects ?? [];
+
+        setStats({
+            totalProjects: projects.length,
+            activeProjects: projects.filter(
+                (p) => p.status !== "CANCELLED" && p.status !== "COMPLETED"
+            ).length,
+            completedProjects: projects
+                .filter((p) => p.status === "COMPLETED")
+                .reduce((acc, project) => acc + (project.tasks?.length || 0), 0),
+            myTasks: projects.reduce((acc, project) => {
+                const tasks = project.tasks ?? [];
+                return (
+                    acc +
+                    tasks.filter(
+                        (t) => t.assignee?.email === currentWorkspace.owner?.email
+                    ).length
+                );
+            }, 0),
+            overdueIssues: projects.reduce((acc, project) => {
+                const tasks = project.tasks ?? [];
+                return acc + tasks.filter((t) => t.due_date < new Date()).length;
+            }, 0),
+        });
     }, [currentWorkspace]);
 
     return (

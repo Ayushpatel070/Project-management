@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, createSelector } from "@reduxjs/toolkit";
 import { dummyWorkspaces } from "../assets/assets";
 import api from "../configs/api";
 
@@ -33,8 +33,9 @@ const workspaceSlice = createSlice({
             state.workspaces = action.payload;
         },
         setCurrentWorkspace: (state, action) => {
-            localStorage.setItem("currentWorkspaceId", action.payload);
-            state.currentWorkspace = state.workspaces.find((w) => w.id === action.payload);
+            const workspace = action.payload;
+            localStorage.setItem("currentWorkspaceId", workspace.id);
+            state.currentWorkspace = workspace;
         },
         addWorkspace: (state, action) => {
             state.workspaces.push(action.payload);
@@ -55,7 +56,7 @@ const workspaceSlice = createSlice({
             }
         },
         deleteWorkspace: (state, action) => {
-            state.workspaces = state.workspaces.filter((w) => w._id !== action.payload);
+            state.workspaces = state.workspaces.filter((w) => w.id !== action.payload);
         },
         addProject: (state, action) => {
             state.currentWorkspace.projects.push(action.payload);
@@ -67,7 +68,7 @@ const workspaceSlice = createSlice({
         addTask: (state, action) => {
 
             state.currentWorkspace.projects = state.currentWorkspace.projects.map((p) => {
-                console.log(p.id, action.payload.projectId, p.id === action.payload.projectId);
+                // console.log(p.id, action.payload.projectId, p.id === action.payload.projectId);
                 if (p.id === action.payload.projectId) {
                     p.tasks.push(action.payload);
                 }
@@ -151,3 +152,13 @@ const workspaceSlice = createSlice({
 
 export const { setWorkspaces, setCurrentWorkspace, addWorkspace, updateWorkspace, deleteWorkspace, addProject, addTask, updateTask, deleteTask } = workspaceSlice.actions;
 export default workspaceSlice.reducer;
+
+// Selectors
+export const selectWorkspaces = (state) => state.workspace.workspaces;
+export const selectCurrentWorkspace = (state) => state.workspace.currentWorkspace;
+
+// Memoized selector to prevent unnecessary rerenders when the workspaces array hasn't changed
+export const selectWorkspacesMemoized = createSelector(
+    [selectWorkspaces],
+    (workspaces) => workspaces
+);

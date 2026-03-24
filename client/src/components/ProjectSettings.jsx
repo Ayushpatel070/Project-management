@@ -38,7 +38,7 @@ export default function ProjectSettings({ project }) {
             {/* Project Details */}
             <div className={cardClasses}>
                 <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-300 mb-4">Project Details</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" name="projectsettings" id="projectsettings">
                     {/* Name */}
                     <div className="space-y-2">
                         <label className={labelClasses}>Project Name</label>

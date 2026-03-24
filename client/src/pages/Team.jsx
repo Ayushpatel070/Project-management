@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { UsersIcon, Search, UserPlus, Shield, Activity } from "lucide-react";
 import InviteMemberDialog from "../components/InviteMemberDialog";
 import { useSelector } from "react-redux";
+import { selectCurrentWorkspace } from "../features/workspaceSlice";
 
 const Team = () => {
 
@@ -9,8 +10,8 @@ const Team = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [users, setUsers] = useState([]);
-    const currentWorkspace = useSelector((state) => state?.workspace?.currentWorkspace || null);
-    const projects = currentWorkspace?.projects || [];
+    const currentWorkspace = useSelector(selectCurrentWorkspace);
+    const projects = currentWorkspace?.projects ?? [];
 
     const filteredUsers = users.filter(
         (user) =>
@@ -19,8 +20,9 @@ const Team = () => {
     );
 
     useEffect(() => {
-        setUsers(currentWorkspace?.members || []);
-        setTasks(currentWorkspace?.projects?.reduce((acc, project) => [...acc, ...project.tasks], []) || []);
+        setUsers(currentWorkspace?.members ?? []);
+        const projects = currentWorkspace?.projects ?? [];
+        setTasks(projects.reduce((acc, project) => [...acc, ...(project.tasks ?? [])], []));
     }, [currentWorkspace]);
 
     return (
@@ -132,11 +134,19 @@ const Team = () => {
                                             className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors"
                                         >
                                             <td className="px-6 py-2.5 whitespace-nowrap flex items-center gap-3">
-                                                <img
-                                                    src={user.user.image}
-                                                    alt={user.user.name}
-                                                    className="size-7 rounded-full bg-gray-200 dark:bg-zinc-800"
-                                                />
+                                                {user.user.image && user.user.image.trim() ? (
+                                                    <img
+                                                        src={user.user.image}
+                                                        alt={user.user.name}
+                                                        className="size-7 rounded-full bg-gray-200 dark:bg-zinc-800"
+                                                    />
+                                                ) : (
+                                                    <div className="size-7 rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center">
+                                                        <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                                            {user.user.name?.charAt(0)?.toUpperCase() || "U"}
+                                                        </span>
+                                                    </div>
+                                                )}
                                                 <span className="text-sm text-zinc-800 dark:text-white truncate">
                                                     {user.user?.name || "Unknown User"}
                                                 </span>
@@ -168,11 +178,19 @@ const Team = () => {
                                     className="p-4 border border-gray-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900"
                                 >
                                     <div className="flex items-center gap-3 mb-2">
-                                        <img
-                                            src={user.user.image}
-                                            alt={user.user.name}
-                                            className="size-9 rounded-full bg-gray-200 dark:bg-zinc-800"
-                                        />
+                                        {user.user.image && user.user.image.trim() ? (
+                                            <img
+                                                src={user.user.image}
+                                                alt={user.user.name}
+                                                className="size-9 rounded-full bg-gray-200 dark:bg-zinc-800"
+                                            />
+                                        ) : (
+                                            <div className="size-9 rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center">
+                                                <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                                    {user.user.name?.charAt(0)?.toUpperCase() || "U"}
+                                                </span>
+                                            </div>
+                                        )}
                                         <div>
                                             <p className="font-medium text-gray-900 dark:text-white">
                                                 {user.user?.name || "Unknown User"}

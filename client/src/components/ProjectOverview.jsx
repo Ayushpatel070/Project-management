@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, UsersIcon, FolderOpen } from "lucide-react";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
+import { selectCurrentWorkspace } from "../features/workspaceSlice";
 import CreateProjectDialog from "./CreateProjectDialog";
 
 const ProjectOverview = () => {
@@ -20,12 +21,12 @@ const ProjectOverview = () => {
         HIGH: "border-green-300 text-green-700 dark:border-green-500 dark:text-green-400",
     };
 
-    const currentWorkspace = useSelector((state) => state?.workspace?.currentWorkspace || null);
+    const currentWorkspace = useSelector(selectCurrentWorkspace);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        setProjects(currentWorkspace?.projects || []);
+        setProjects(currentWorkspace?.projects ?? []);
     }, [currentWorkspace]);
 
     return currentWorkspace && (

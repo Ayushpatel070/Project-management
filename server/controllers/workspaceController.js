@@ -1,6 +1,53 @@
 import prisma from "../configs/prisma.js";
 
 
+// Create a new workspace
+export const createWorkspace = async (req, res) => {
+    try {
+        const { userId } = await req.auth();
+        const { name, description } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: "Workspace name is required" });
+        }
+
+        // Generate a unique slug from the name
+        const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+        // Check if slug already exists
+        const existingWorkspace = await prisma.workspace.findUnique({ where: { slug } });
+        if (existingWorkspace) {
+            return res.status(400).json({ message: "A workspace with this name already exists" });
+        }
+
+        // Create the workspace
+        const workspace = await prisma.workspace.create({
+            data: {
+                name,
+                slug,
+                description: description || "",
+                ownerId: userId,
+                members: {
+                    create: {
+                        userId: userId,
+                        role: "ADMIN"
+                    }
+                }
+            },
+            include: {
+                members: { include: { user: true } },
+                owner: true
+            }
+        });
+
+        res.status(201).json({ workspace, message: "Workspace created successfully" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.code || error.message });
+    }
+}
+
 // Get all workspaces for user
 export const getUserWorkspaces = async (req, res) => {
     try {

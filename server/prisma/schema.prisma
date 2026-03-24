@@ -41,7 +41,7 @@ enum Priority {
 }
 
 model User {
-    id        String   @id
+    id        String   @id @default(uuid())
     name      String
     email     String   @unique
     image     String   @default("")
@@ -57,7 +57,7 @@ model User {
 }
 
 model Workspace {
-    id          String   @id
+    id          String   @id @default(uuid())
     name        String
     slug        String   @unique
     description String?

@@ -198,7 +198,15 @@ const ProjectTasks = ({ tasks }) => {
                                                 </td>
                                                 <td className="px-4 py-2">
                                                     <div className="flex items-center gap-2">
-                                                        <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
+                                                        {task.assignee?.image && task.assignee.image.trim() ? (
+                                                            <img src={task.assignee.image} className="size-5 rounded-full" alt="avatar" />
+                                                        ) : (
+                                                            <div className="size-5 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center">
+                                                                <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                                                    {task.assignee?.name?.charAt(0)?.toUpperCase() || "U"}
+                                                                </span>
+                                                            </div>
+                                                        )}
                                                         {task.assignee?.name || "-"}
                                                     </div>
                                                 </td>
@@ -257,7 +265,15 @@ const ProjectTasks = ({ tasks }) => {
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                                            <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
+                                            {task.assignee?.image && task.assignee.image.trim() ? (
+                                                <img src={task.assignee.image} className="size-5 rounded-full" alt="avatar" />
+                                            ) : (
+                                                <div className="size-5 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center">
+                                                    <span className="text-xs font-semibold text-gray-600 dark:text-zinc-300">
+                                                        {task.assignee?.name?.charAt(0)?.toUpperCase() || "U"}
+                                                    </span>
+                                                </div>
+                                            )}
                                             {task.assignee?.name || "-"}
                                         </div>
 

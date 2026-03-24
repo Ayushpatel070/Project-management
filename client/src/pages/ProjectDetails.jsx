@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { selectCurrentWorkspace } from "../features/workspaceSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeftIcon, PlusIcon, SettingsIcon, BarChart3Icon, CalendarIcon, FileStackIcon, ZapIcon } from "lucide-react";
 import ProjectAnalytics from "../components/ProjectAnalytics";
@@ -15,7 +16,8 @@ export default function ProjectDetail() {
     const id = searchParams.get('id');
 
     const navigate = useNavigate();
-    const projects = useSelector((state) => state?.workspace?.currentWorkspace?.projects || []);
+    const currentWorkspace = useSelector(selectCurrentWorkspace);
+    const projects = currentWorkspace?.projects ?? [];
 
     const [project, setProject] = useState(null);
     const [tasks, setTasks] = useState([]);

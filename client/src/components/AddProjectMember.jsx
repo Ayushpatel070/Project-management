@@ -40,7 +40,7 @@ const AddProjectMember = ({ isDialogOpen, setIsDialogOpen }) => {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" name="addprojectmember" id="addprojectmember">
                     {/* Email */}
                     <div className="space-y-2">
                         <label htmlFor="email" className="text-sm font-medium text-zinc-900 dark:text-zinc-200">

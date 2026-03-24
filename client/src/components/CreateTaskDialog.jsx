@@ -30,7 +30,7 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
             <div className="bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-lg w-full max-w-md p-6 text-zinc-900 dark:text-white">
                 <h2 className="text-xl font-bold mb-4">Create New Task</h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" name="createtaskdialog" id="createtaskdialog">
                     {/* Title */}
                     <div className="space-y-1">
                         <label htmlFor="title" className="text-sm font-medium">Title</label>
